@@ -1020,7 +1020,7 @@ const depth = 3
 const minWeightMagnitude = 14
 
 getTransactionsToApprove(depth)
-    .then(transactionsToApprove => attachToTanle(minWightMagnitude, trytes, { transactionsToApprove }))
+    .then(transactionsToApprove => attachToTangle(minWightMagnitude, trytes, { transactionsToApprove }))
     .then(storeAndBroadcast)
     .catch(err => {
         // handle errors here
@@ -1142,7 +1142,7 @@ getLatestInclusion(tails)
 | ---------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [provider] | <code>Provider</code> | Optional network provider to fetch inputs and remainder address. In case this is omitted, proper input objects and remainder should be passed to [`prepareTransfers`](#module_core.prepareTransfers), if required. |
 
-Create a [`prepareTransfers`](#module_core.prepareTransfers) function by passing an optional newtowrk `provider`.
+Create a [`prepareTransfers`](#module_core.prepareTransfers) function by passing an optional network `provider`.
 It is possible to prepare and sign transactions offline, by omitting the provider option.
 
 **Returns**: <code>function</code> - [`prepareTransfers`](#module_core.prepareTransfers)  
@@ -1150,7 +1150,7 @@ It is possible to prepare and sign transactions offline, by omitting the provide
 
 ### _core_.prepareTransfers(seed, transfers, [options], [callback])
 
-**Fulfil**: <code>array</code> trytes Returns bundle trytes  
+**Fulfil**: <code>array</code> Returns bundle trytes  
 **Reject**: <code>Error</code>
 
 -   `INVALID_SEED`
@@ -1173,7 +1173,7 @@ It is possible to prepare and sign transactions offline, by omitting the provide
 | [options.inputs[].security] | <code>number</code>              | <code>2</code> | Security level                                                                      |
 | [options.inputs[].balance]  | <code>number</code>              |                | Balance in iotas                                                                    |
 | [options.address]           | <code>Hash</code>                |                | Remainder address                                                                   |
-| [options.security]          | <code>Number</code>              |                | Security level to be used for getting inputs and reminder address                   |
+| [options.security]          | <code>Number</code>              | <code>2</code> | Security level to be used for getting inputs and reminder address                   |
 | [callback]                  | <code>function</code>            |                | Optional callback                                                                   |
 
 **Properties**
@@ -1187,8 +1187,8 @@ adding remainder and signing. It can be used to generate and sign bundles either
 For offline usage, please see [`createPrepareTransfers`](#module_core.createPrepareTransfers)
 which creates a `prepareTransfers` without a network provider.
 
-**Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to netowrk.
-This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the netowrk after broadcasting.
+**Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to network.
+This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the network after broadcasting.
 
 <a name="module_core.createPromoteTransaction"></a>
 
@@ -1330,7 +1330,7 @@ replayBundle(tail)
 | [reference]        | <code>string</code>               | Optional reference hash                     |
 | [callback]         | <code>Callback</code>             | Optional callback                           |
 
-[Attaches to tanlge](#module_core.attachToTangle), [stores](#module_core.storeTransactions)
+[Attaches to tangle](#module_core.attachToTangle), [stores](#module_core.storeTransactions)
 and [broadcasts](#module_core.broadcastTransactions) a list of transaction trytes.
 
 **Note:** Persist the transaction trytes in local storage **before** calling this command, to ensure
