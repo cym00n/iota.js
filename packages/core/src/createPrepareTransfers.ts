@@ -111,7 +111,7 @@ export const createPrepareTransfers = (provider?: Provider, now: () => number = 
      * @param {number} [options.inputs[].security = 2] Security level
      * @param {number} [options.inputs[].balance] Balance in iotas
      * @param {Hash} [options.address] Remainder address
-     * @param {Number} [options.security] Security level to be used for getting inputs and reminder address
+     * @param {Number} [options.security = 2] Security level to be used for getting inputs and reminder address
      * @property {Hash} [options.hmacKey] HMAC key used for attaching an HMAC
      *
      * @param {function} [callback] Optional callback
