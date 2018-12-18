@@ -40,11 +40,11 @@ const getEntryWithDefaults = (entry: Partial<BundleEntry>): BundleEntry => ({
 })
 
 /**
- * Creates a bunlde with given transaction entries.
+ * Creates a bundle with given transaction entries.
  *
  * @method createBundle
  *
- * @param {BundleEntry[]} entries - Entries of signle or multiple transactions with the same address
+ * @param {BundleEntry[]} entries - Entries of single or multiple transactions with the same address
  *
  * @return {Transaction[]} List of transactions in the bundle
  */
@@ -52,7 +52,7 @@ export const createBundle = (entries: ReadonlyArray<Partial<BundleEntry>> = []):
     entries.reduce((bundle: Bundle, entry) => addEntry(bundle, entry), [])
 
 /**
- * Creates a bunlde with given transaction entries
+ * Creates a bundle with given transaction entries
  *
  * @method addEntry
  *

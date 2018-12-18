@@ -28,7 +28,7 @@ export const createSendTrytes = (provider: Provider, attachFn?: AttachToTangle) 
     const attachToTangle = attachFn || createAttachToTangle(provider)
 
     /**
-     * [Attaches to tanlge]{@link #module_core.attachToTangle}, [stores]{@link #module_core.storeTransactions}
+     * [Attaches to tangle]{@link #module_core.attachToTangle}, [stores]{@link #module_core.storeTransactions}
      * and [broadcasts]{@link #module_core.broadcastTransactions} a list of transaction trytes.
      *
      * **Note:** Persist the transaction trytes in local storage __before__ calling this command, to ensure

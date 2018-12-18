@@ -44,7 +44,7 @@ export const createGetTransactionsToApprove = ({ send }: Provider) =>
      *
      * getTransactionsToApprove(depth)
      *   .then(transactionsToApprove =>
-     *      attachToTanle(minWightMagnitude, trytes, { transactionsToApprove })
+     *      attachToTangle(minWightMagnitude, trytes, { transactionsToApprove })
      *   )
      *   .then(storeAndBroadcast)
      *   .catch(err => {

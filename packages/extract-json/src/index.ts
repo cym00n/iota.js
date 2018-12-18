@@ -38,7 +38,7 @@ const numericTrytesRegex = /^(RA|PA)?(UA|VA|WA|XA|YA|ZA|9B|AB|BB|CB)+((SA)(UA|VA
  *
  * ```js
  * getBundle(tailHash)
- *   .then(bunlde => {
+ *   .then(bundle => {
  *      const msg = JSON.parse(extractJson(bundle))
  *      // ...
  *   })

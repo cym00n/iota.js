@@ -70,7 +70,7 @@ export interface PrepareTransfersProps {
 }
 
 /**
- * Create a [`prepareTransfers`]{@link #module_core.prepareTransfers} function by passing an optional newtowrk `provider`.
+ * Create a [`prepareTransfers`]{@link #module_core.prepareTransfers} function by passing an optional network `provider`.
  * It is possible to prepare and sign transactions offline, by omitting the provider option.
  *
  * @method createPrepareTransfers
@@ -93,8 +93,8 @@ export const createPrepareTransfers = (provider?: Provider, now: () => number = 
      * For offline usage, please see [`createPrepareTransfers`]{@link #module_core.createPrepareTransfers}
      * which creates a `prepareTransfers` without a network provider.
      *
-     * **Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to netowrk.
-     * This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the netowrk after broadcasting.
+     * **Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to network.
+     * This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the network after broadcasting.
      *
      * @method prepareTransfers
      *
@@ -117,7 +117,7 @@ export const createPrepareTransfers = (provider?: Provider, now: () => number = 
      * @param {function} [callback] Optional callback
      *
      * @return {Promise}
-     * @fulfil {array} trytes Returns bundle trytes
+     * @fulfil {array} Returns bundle trytes
      * @reject {Error}
      * - `INVALID_SEED`
      * - `INVALID_TRANSFER_ARRAY`
