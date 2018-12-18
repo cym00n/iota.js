@@ -34,7 +34,6 @@ const HASH_LENGTH = 81
 const SIGNATURE_MESSAGE_FRAGMENT_LENGTH = 2187
 const KEY_FRAGMENT_LENGTH = 6561
 const NULL_HASH_TRYTES = '9'.repeat(HASH_LENGTH)
-const SECURITY_LEVEL = 2
 
 export interface PrepareTransfersOptions {
     readonly inputs: ReadonlyArray<Address>
@@ -263,7 +262,7 @@ export const createAddInputs = (provider?: Provider) => {
             transactions: res.reduce(
                 (acc, input) =>
                     addEntry(acc, {
-                        length: input.security,
+                        length: input.security || security,
                         address: removeChecksum(input.address),
                         value: -input.balance,
                         timestamp: timestamp || Math.floor(Date.now() / 1000),
@@ -342,18 +341,18 @@ export const finalize = (props: PrepareTransfersProps): PrepareTransfersProps =>
 })
 
 export const addSignatures = (props: PrepareTransfersProps): PrepareTransfersProps => {
-    const { transactions, inputs, seed } = props
+    const { transactions, inputs, seed, security } = props
     const normalizedBundle = normalizedBundleHash(transactions[0].bundle)
 
     return {
         ...props,
         transactions: addTrytes(
             transactions,
-            inputs.reduce((acc: ReadonlyArray<Trytes>, { keyIndex, security }) => {
-                const keyTrits = key(subseed(trits(seed), keyIndex), security || SECURITY_LEVEL)
+            inputs.reduce((acc: ReadonlyArray<Trytes>, input) => {
+                const keyTrits = key(subseed(trits(seed), input.keyIndex), input.security || security)
 
                 return acc.concat(
-                    Array(security)
+                    Array(input.security || security)
                         .fill(null)
                         .map((_, i) =>
                             trytes(
