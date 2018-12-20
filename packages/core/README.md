@@ -231,7 +231,7 @@ addNeighbors(['udp://148.148.148.148:14265'])
 | ------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | trunkTransaction   | <code>Hash</code>                            | Trunk transaction as returned by [`getTransactionsToApprove`](#module_core.getTransactionsToApprove)  |
 | branchTransaction  | <code>Hash</code>                            | Branch transaction as returned by [`getTransactionsToApprove`](#module_core.getTransactionsToApprove) |
-| minWeightMagnitude | <code>number</code>                          | Number of minimun trailing zeros in tail transaction hash                                             |
+| minWeightMagnitude | <code>number</code>                          | Number of minimum trailing zeros in tail transaction hash                                             |
 | trytes             | <code>Array.&lt;TransactionTrytes&gt;</code> | List of transaction trytes                                                                            |
 | [callback]         | <code>Callback</code>                        | Optional callback                                                                                     |
 
@@ -242,16 +242,16 @@ Returns list of transaction trytes and overwrites the following fields:
 -   `hash`
 -   `nonce`
 -   `attachmentTimestamp`
--   `attachmentTimsetampLowerBound`
+-   `attachmentTimestampLowerBound`
 -   `attachmentTimestampUpperBound`
 
-This method can be replaced with a local equivelant such as
+This method can be replaced with a local equivalent such as
 [`ccurl.interface.js`](https://github.com/iotaledger/ccurl.interface.js) in node.js,
 [`curl.lib.js`](https://github.com/iotaledger/curl.lib.js) which works on WebGL 2 enabled browsers
 or remote [`PoWbox`](https://powbox.devnet.iota.org/).
 
 `trunkTransaction` and `branchTransaction` hashes are given by
-[`getTransactionToApprove`](#module_core.getTransactionsToApprove).
+[`getTransactionsToApprove`](#module_core.getTransactionsToApprove).
 
 **Note:** Persist the transaction trytes in local storage **before** calling this command, to ensure
 that reattachment is possible, until your bundle has been included.
@@ -261,7 +261,7 @@ that reattachment is possible, until your bundle has been included.
 ```js
 getTransactionsToApprove(depth)
     .then(({ trunkTransaction, branchTransaction }) =>
-        attachToTangle(trunkTransaction, branchTransaction, minWightMagnitude, trytes)
+        attachToTangle(trunkTransaction, branchTransaction, minWeightMagnitude, trytes)
     )
     .then(attachedTrytes => {
         // ...
@@ -380,12 +380,12 @@ broadcastTransactions(trytes)
 -   Fetch error
 -   Reason for returning `false`, if called with `options.rejectWithReason`
 
-| Param                      | Type                                                 | Description                                                                                             |
-| -------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| transactions               | <code>Hash</code> \| <code>Array.&lt;Hash&gt;</code> | Tail transaction hash (hash of transaction with `currentIndex=0`), or array of tail transaction hashes. |
-| [options]                  | <code>object</code>                                  | Options                                                                                                 |
-| [options.rejectWithReason] | <code>boolean</code>                                 | Enables rejection if state is `false`, with reason as error message                                     |
-| [callback]                 | <code>Callback</code>                                | Optional callback.                                                                                      |
+| Param                      | Type                                                 | Description                                                                                               |
+| -------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| transactions               | <code>Hash</code> \| <code>Array.&lt;Hash&gt;</code> | Tail transaction hash (hash of transaction with `currentIndex == 0`), or array of tail transaction hashes |
+| [options]                  | <code>object</code>                                  | Options                                                                                                   |
+| [options.rejectWithReason] | <code>boolean</code>                                 | Enables rejection if state is `false`, with reason as error message                                       |
+| [callback]                 | <code>Callback</code>                                | Optional callback                                                                                         |
 
 Checks if a transaction is _consistent_ or a set of transactions are _co-consistent_, by calling
 [`checkConsistency`](https://docs.iota.org/iri/api#endpoints/checkConsistency) command.
@@ -393,8 +393,8 @@ _Co-consistent_ transactions and the transactions that they approve (directly or
 are not conflicting with each other and rest of the ledger.
 
 As long as a transaction is consistent it might be accepted by the network.
-In case transaction is inconsistent, it will not be accepted, and a reattachment
-is required by calling [`replaybundle`](#module_core.replayBundle).
+In case a transaction is inconsistent, it will not be accepted, and a reattachment
+is required by calling [`replayBundle`](#module_core.replayBundle).
 
 **Example**
 
@@ -416,9 +416,9 @@ Consistent transactions might remain pending due to networking issues,
 or if not referenced by recent milestones issued by
 [Coordinator](https://docs.iota.org/introduction/tangle/consensus).
 Therefore `checkConsistency` with a time heuristic can determine
-if a transaction should be [_promoted_](promoteTransaction)
-or [_reattached_](replayBundle).
-This functionality is abstracted in [`isPromotable`](isPromotable).
+if a transaction should be [_promoted_](#module_core.promoteTransaction)
+or [_reattached_](#module_core.replayBundle).
+This functionality is abstracted in [`isPromotable`](#module_core.isPromotable).
 
 ```js
 const isAboveMaxDepth = attachmentTimestamp =>
@@ -1007,7 +1007,7 @@ the signatures and cross-checking for conflicting transactions.
 
 Tip selection is executed by a Random Walk (RW) starting at random point in given `depth`
 ending up to the pair of selected tips. For more information about tip selection please refer to the
-[whitepaper](http://iotatoken.com/IOTA_Whitepaper.pdf).
+[whitepaper](https://iota.org/IOTA_Whitepaper.pdf).
 
 The `reference` option allows to select tips in a way that the reference transaction is being approved too.
 This is useful for promoting transactions, for example with
@@ -1020,7 +1020,7 @@ const depth = 3
 const minWeightMagnitude = 14
 
 getTransactionsToApprove(depth)
-    .then(transactionsToApprove => attachToTanle(minWightMagnitude, trytes, { transactionsToApprove }))
+    .then(transactionsToApprove => attachToTangle(minWeightMagnitude, trytes, { transactionsToApprove }))
     .then(storeAndBroadcast)
     .catch(err => {
         // handle errors here
@@ -1142,7 +1142,7 @@ getLatestInclusion(tails)
 | ---------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [provider] | <code>Provider</code> | Optional network provider to fetch inputs and remainder address. In case this is omitted, proper input objects and remainder should be passed to [`prepareTransfers`](#module_core.prepareTransfers), if required. |
 
-Create a [`prepareTransfers`](#module_core.prepareTransfers) function by passing an optional newtowrk `provider`.
+Create a [`prepareTransfers`](#module_core.prepareTransfers) function by passing an optional network `provider`.
 It is possible to prepare and sign transactions offline, by omitting the provider option.
 
 **Returns**: <code>function</code> - [`prepareTransfers`](#module_core.prepareTransfers)  
@@ -1150,7 +1150,7 @@ It is possible to prepare and sign transactions offline, by omitting the provide
 
 ### _core_.prepareTransfers(seed, transfers, [options], [callback])
 
-**Fulfil**: <code>array</code> trytes Returns bundle trytes  
+**Fulfil**: <code>array</code> Returns bundle trytes  
 **Reject**: <code>Error</code>
 
 -   `INVALID_SEED`
@@ -1170,10 +1170,10 @@ It is possible to prepare and sign transactions offline, by omitting the provide
 | [options.inputs]            | <code>Array.&lt;Input&gt;</code> |                | Inputs used for signing. Needs to have correct security, keyIndex and address value |
 | [options.inputs[].address]  | <code>Hash</code>                |                | Input address trytes                                                                |
 | [options.inputs[].keyIndex] | <code>number</code>              |                | Key index at which address was generated                                            |
-| [options.inputs[].security] | <code>number</code>              | <code>2</code> | Security level                                                                      |
+| [options.inputs[].security] | <code>number</code>              |                | Security level                                                                      |
 | [options.inputs[].balance]  | <code>number</code>              |                | Balance in iotas                                                                    |
 | [options.address]           | <code>Hash</code>                |                | Remainder address                                                                   |
-| [options.security]          | <code>Number</code>              |                | Security level to be used for getting inputs and reminder address                   |
+| [options.security]          | <code>Number</code>              | <code>2</code> | Security level to be used for getting inputs and remainder address                  |
 | [callback]                  | <code>function</code>            |                | Optional callback                                                                   |
 
 **Properties**
@@ -1185,10 +1185,10 @@ It is possible to prepare and sign transactions offline, by omitting the provide
 Prepares the transaction trytes by generating a bundle, filling in transfers and inputs,
 adding remainder and signing. It can be used to generate and sign bundles either online or offline.
 For offline usage, please see [`createPrepareTransfers`](#module_core.createPrepareTransfers)
-which creates a `prepareTransfers` without a network provider.
+which can create a `prepareTransfers` function without a network provider.
 
-**Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to netowrk.
-This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the netowrk after broadcasting.
+**Note:** After calling this method, persist the returned transaction trytes in local storage. Only then you should broadcast to network.
+This will allow for reattachments and prevent key reuse if trytes can't be recovered by querying the network after broadcasting.
 
 <a name="module_core.createPromoteTransaction"></a>
 
@@ -1197,7 +1197,7 @@ This will allow for reattachments and prevent key reuse if trytes can't be recov
 | Param      | Type                  | Description                                                                                       |
 | ---------- | --------------------- | ------------------------------------------------------------------------------------------------- |
 | provider   | <code>Provider</code> | Network provider                                                                                  |
-| [attachFn] | <code>function</code> | Optional `AttachToTangle` function to override the [default method](#module_core.attachToTangle). |
+| [attachFn] | <code>function</code> | Optional `attachToTangle` function to override the [default method](#module_core.attachToTangle). |
 
 **Returns**: <code>function</code> - [`promoteTransaction`](#module_core.promoteTransaction)  
 <a name="module_core.promoteTransaction"></a>
@@ -1207,23 +1207,23 @@ This will allow for reattachments and prevent key reuse if trytes can't be recov
 **Fulfil**: <code>Transaction[]</code>  
 **Reject**: <code>Error</code>
 
--   `INCONSISTENT SUBTANGLE`: In this case promotion has no effect and reatchment is required.
+-   `INCONSISTENT_SUBTANGLE`: In this case promotion has no effect and a reattachment is required by calling [`replayBundle`](#module_core.replayBundle).
 -   Fetch error
 
-| Param               | Type                                          | Description                                                                                       |
-| ------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| tail                | <code>string</code>                           |                                                                                                   |
-| depth               | <code>int</code>                              |                                                                                                   |
-| minWeightMagnitude  | <code>int</code>                              |                                                                                                   |
-| [spamTransfers]     | <code>array</code>                            | Array of spam transfers to promote with. By default it will issue an all-9s, zero-value transfer. |
-| [options]           | <code>object</code>                           |                                                                                                   |
-| [options.delay]     | <code>number</code>                           | Delay between spam transactions in `ms`                                                           |
-| [options.interrupt] | <code>boolean</code> \| <code>function</code> | Interrupt signal, which can be a function that evaluates to boolean                               |
-| [callback]          | <code>function</code>                         |                                                                                                   |
+| Param               | Type                                          | Description                                                                                                                                                                                                                             |
+| ------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tail                | <code>Hash</code>                             | Tail transaction hash. Tail transaction is the transaction in the bundle with `currentIndex == 0`.                                                                                                                                      |
+| depth               | <code>number</code>                           | The depth at which Random Walk starts. A value of `3` is typically used by wallets, meaning that RW starts 3 milestones back.                                                                                                           |
+| minWeightMagnitude  | <code>number</code>                           | Minimum number of trailing zeros in transaction hash. This is used by [`attachToTangle`](#module_core.attachToTangle) function to search for a valid `nonce`. Currently it is `14` on mainnet & spamnet and `9` on most other testnets. |
+| [spamTransfers]     | <code>array</code>                            | Array of spam transfers to promote with. By default it will issue an all-9s, zero-value transfer.                                                                                                                                       |
+| [options]           | <code>object</code>                           | Options                                                                                                                                                                                                                                 |
+| [options.delay]     | <code>number</code>                           | Delay between spam transactions in `ms`                                                                                                                                                                                                 |
+| [options.interrupt] | <code>boolean</code> \| <code>function</code> | Interrupt signal, which can be a function that evaluates to boolean                                                                                                                                                                     |
+| [callback]          | <code>Callback</code>                         | Optional callback                                                                                                                                                                                                                       |
 
 Promotes a transaction by adding zero-value spam transactions on top of it.
 Will promote `maximum` transfers on top of the current one with `delay` interval. Promotion
-is interruptable through `interrupt` option.
+is interruptable through the `interrupt` option.
 
 <a name="module_core.createRemoveNeighbors"></a>
 
@@ -1277,15 +1277,15 @@ This method has temporary effect until your IRI node relaunches.
 -   `INVALID_BUNDLE`
 -   Fetch error
 
-| Param              | Type                  | Description                                                                                                                                                                                                                           |
-| ------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| tail               | <code>Hash</code>     | Tail transaction hash. Tail transaction is the transaction in the bundle with `currentIndex == 0`.                                                                                                                                    |
-| depth              | <code>number</code>   | The depth at which Random Walk starts. A value of `3` is typically used by wallets, meaning that RW starts 3 milestones back.                                                                                                         |
-| minWeightMagnitude | <code>number</code>   | Minimum number of trailing zeros in transaction hash. This is used by [`attachToTangle`](#module_core.attachToTangle) function to search for a valid `nonce`. Currently is `14` on mainnet & spamnnet and `9` on most other testnets. |
-| [callback]         | <code>Callback</code> | Optional callback                                                                                                                                                                                                                     |
+| Param              | Type                  | Description                                                                                                                                                                                                                             |
+| ------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tail               | <code>Hash</code>     | Tail transaction hash. Tail transaction is the transaction in the bundle with `currentIndex == 0`.                                                                                                                                      |
+| depth              | <code>number</code>   | The depth at which Random Walk starts. A value of `3` is typically used by wallets, meaning that RW starts 3 milestones back.                                                                                                           |
+| minWeightMagnitude | <code>number</code>   | Minimum number of trailing zeros in transaction hash. This is used by [`attachToTangle`](#module_core.attachToTangle) function to search for a valid `nonce`. Currently it is `14` on mainnet & spamnet and `9` on most other testnets. |
+| [callback]         | <code>Callback</code> | Optional callback                                                                                                                                                                                                                       |
 
-Reattaches a transfer to tangle by selecting tips & performing the Proof-of-Work again.
-Reattachments are usefull in case original transactions are pending, and can be done securely
+Reattaches a transfer to the Tangle by selecting tips and performing the Proof-of-Work again.
+Reattachments are useful in case the original transactions are pending, and can be done securely
 as many times as needed.
 
 **Example**
@@ -1322,15 +1322,15 @@ replayBundle(tail)
 -   `INVALID_MIN_WEIGHT_MAGNITUDE`
 -   Fetch error, if connected to network
 
-| Param              | Type                              | Description                                 |
-| ------------------ | --------------------------------- | ------------------------------------------- |
-| trytes             | <code>Array.&lt;Trytes&gt;</code> | List of trytes to attach, store & broadcast |
-| depth              | <code>number</code>               | Depth                                       |
-| minWeightMagnitude | <code>number</code>               | Min weight magnitude                        |
-| [reference]        | <code>string</code>               | Optional reference hash                     |
-| [callback]         | <code>Callback</code>             | Optional callback                           |
+| Param              | Type                              | Description                                                                                                                                                                 |
+| ------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| trytes             | <code>Array.&lt;Trytes&gt;</code> | List of trytes to attach, store and broadcast                                                                                                                               |
+| depth              | <code>number</code>               | The depth at which Random Walk starts. A value of `3` is typically used by wallets, meaning that RW starts 3 milestones back.                                               |
+| minWeightMagnitude | <code>number</code>               | Minimum number of trailing zeros in transaction hash. This is used to search for a valid `nonce`. Currently it is `14` on mainnet & spamnet and `9` on most other testnets. |
+| [reference]        | <code>string</code>               | Optional reference transaction hash                                                                                                                                         |
+| [callback]         | <code>Callback</code>             | Optional callback                                                                                                                                                           |
 
-[Attaches to tanlge](#module_core.attachToTangle), [stores](#module_core.storeTransactions)
+[Attaches to Tangle](#module_core.attachToTangle), [stores](#module_core.storeTransactions)
 and [broadcasts](#module_core.broadcastTransactions) a list of transaction trytes.
 
 **Note:** Persist the transaction trytes in local storage **before** calling this command, to ensure
